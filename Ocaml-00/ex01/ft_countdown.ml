@@ -6,12 +6,4 @@ let ft_countdown start =
     for count = start downto 0 do
       print_int count;
       print_char '\n'
-    done;;
-
-(*ft_countdown 3;;
-
-print_endline "";;
-ft_countdown 0;;
-
-print_endline "";;
-ft_countdown (-1);;*)
+    done
