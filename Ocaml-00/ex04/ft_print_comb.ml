@@ -1,6 +1,6 @@
 let rec print_num_comb (one : int) (two : int) (three : int) = 
     if three <= 9 && two <= 9 && one <= 9 then (
-        if three > two && two > one && three <> two  && two <> one then (
+        if three > two && two > one then (
             print_int one;
             print_int two;
             print_int three;
