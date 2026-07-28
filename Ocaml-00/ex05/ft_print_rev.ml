@@ -4,7 +4,6 @@ let rec print_rev string ind =
         print_rev string (ind - 1)
     )
 
-
 let ft_print_rev string =
     print_rev string (String.length string - 1);
     print_char '\n'

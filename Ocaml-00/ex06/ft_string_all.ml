@@ -10,12 +10,8 @@ let rec check_str func str ind =
     ) else
         true
 
-
 let ft_string_all func str = 
-    if String.length str = 0 then
-        false
-    else
-        check_str func str (String.length str - 1)
+    check_str func str (String.length str - 1)
 
 
 (*let is_digit c = c >= '0' && c <= '9'

@@ -6,7 +6,6 @@ let print_value number =
         print_int number
     )
 
-
 let rec print_comb_sec first second = 
     if second <= 99 then (
         if first <> 0 || second <> 1 then
@@ -21,7 +20,6 @@ let rec print_comb_sec first second =
         )
     )
 
-
 let rec print_comb first = 
     if first <= 98 then (
         print_comb_sec first (first + 1);
@@ -30,7 +28,6 @@ let rec print_comb first =
             print_comb (first + 1)
         )
     )
-
 
 let ft_print_comb2 () = 
     print_comb 0;

@@ -20,9 +20,7 @@ let rec print_num_comb (one : int) (two : int) (three : int) =
         print_string "\n"
   
 let ft_print_comb () = 
-    let first = 0 in
-    let second = 1 in
-    let third = 2 in
-    print_num_comb first second third
+    print_num_comb 0 1 2
 
+    
 (*let () = ft_print_comb()*)

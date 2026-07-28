@@ -4,7 +4,6 @@ let ft_is_alpha car =
     else
         false
 
-
 let move_car_one_step car = 
     if ft_is_alpha car = false then
         car
@@ -15,13 +14,13 @@ let move_car_one_step car =
             | _ -> char_of_int (int_of_char car + 1)
     )
 
-
 let rec ft_rot_n move str = 
     if move = 0 then
         str
     else
         ft_rot_n (move - 1) (String.map move_car_one_step str)
 
+        
 (*let () =
     print_endline "ft_rot_n 1 'abcdefghijklmnopqrstuvwxyz'";
     print_string @@ ft_rot_n 1 "abcdefghijklmnopqrstuvwxyz";

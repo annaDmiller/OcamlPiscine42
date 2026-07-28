@@ -8,7 +8,6 @@ let rec compare_letters str left_ind right_ind =
             compare_letters str (left_ind + 1) (right_ind - 1)
     )
 
-
 let ft_is_palindrome str =
     if String.length str = 0 then
         true
