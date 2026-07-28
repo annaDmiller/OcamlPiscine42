@@ -16,7 +16,7 @@ let ft_is_palindrome str =
         compare_letters str 0 (String.length str - 1)
 
 
-let print_bool boolean =
+(*let print_bool boolean =
     match boolean with
         | true -> print_string "true";
         | false -> print_string "false"
@@ -37,4 +37,4 @@ let () =
 
     print_endline "ft_is_palindrome ''";
     print_bool (ft_is_palindrome "");
-    print_endline "";
+    print_endline "";*)
