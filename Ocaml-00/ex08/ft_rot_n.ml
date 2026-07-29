@@ -8,10 +8,14 @@ let move_car_one_step car =
     if ft_is_alpha car = false then
         car
     else (
-        match car with
-            | 'z' ->  'a'
-            | 'Z' -> 'A'
-            | _ -> char_of_int (int_of_char car + 1)
+        if car = 'z' then
+            'a'
+        else (
+            if car = 'Z' then
+                'A'
+            else
+                char_of_int (int_of_char car + 1)
+        )
     )
 
 let rec ft_rot_n move str = 
