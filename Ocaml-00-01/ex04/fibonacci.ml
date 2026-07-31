@@ -1,13 +1,14 @@
-let rec fibonacci num = 
-    if num = 0 then
-        0
-    else if num = 1 then
-        1
-    else if num > 1 then
-        fibonacci (num - 2) + fibonacci (num - 1)
-    else
-        -1
-    
+let fibonacci num = 
+    let rec revers ind res_ind next_val = 
+        if ind = num then
+            res_ind
+        else
+            revers (ind + 1) next_val (res_ind + next_val)
+      in
+      if num < 0 then
+          -1
+      else
+          revers 0 0 1
 
 let () =
       print_endline "fibonacci (-3) - expected -1";
