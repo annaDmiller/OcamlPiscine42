@@ -10,30 +10,30 @@ let rec ackermann m n =
 
 
 let () =
-      print_endline "ackermann (-1) 7";
+      print_endline "ackermann (-1) 7 - expected -1";
       print_int (ackermann (-1) 7);
       print_char '\n';
       
-      print_endline "ackermann 2 (-1)";
+      print_endline "ackermann 2 (-1) - expected -1";
       print_int (ackermann 2 (-1));
       print_char '\n';
 
-      print_endline "ackermann 0 0";
+      print_endline "ackermann 0 0 - expected 1";
       print_int (ackermann 0 0);
       print_char '\n';
 
-      print_endline "ackermann 0 3";
+      print_endline "ackermann 0 3 - expected 4";
       print_int (ackermann 0 3);
       print_char '\n';
       
-      print_endline "ackermann 2 0";
+      print_endline "ackermann 2 0 - expected 3";
       print_int (ackermann 2 0);
       print_char '\n';
 
-      print_endline "ackermann 2 3";
+      print_endline "ackermann 2 3 - expected 9";
       print_int (ackermann 2 3);
       print_char '\n';
 
-      print_endline "ackermann 4 1";
+      print_endline "ackermann 4 1 - expected 65533";
       print_int (ackermann 4 1);
       print_char '\n'
