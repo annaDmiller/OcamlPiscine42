@@ -5,6 +5,7 @@ let fibonacci num =
         else
             revers (ind + 1) next_val (res_ind + next_val)
       in
+      
       if num < 0 then
           -1
       else
