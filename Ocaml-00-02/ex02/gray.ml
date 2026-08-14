@@ -1,4 +1,4 @@
-let rec list_to_str_with_pref pref res_str rest_lst =
+let rec list_to_str_with_pref (pref : string) (res_str : string) (rest_lst : string list) : string =
     match rest_lst with
         | [] -> res_str
         | [""] -> (
@@ -14,12 +14,12 @@ let rec list_to_str_with_pref pref res_str rest_lst =
                 list_to_str_with_pref pref (res_str ^ " " ^ pref ^ str) rest
         )
 
-let add_prefix pref seq =
+let add_prefix (pref : string) (seq : string) : string=
     let str_lst = String.split_all ~sep:" " seq
     in
     list_to_str_with_pref pref "" str_lst
 
-let add_prefix_and_rev pref seq =
+let add_prefix_and_rev (pref : string) (seq : string) : string =
     let str_lst = String.rsplit_all ~sep:" " seq in
         let rec aux res_lst rest_lst = 
             match rest_lst with
@@ -29,7 +29,7 @@ let add_prefix_and_rev pref seq =
     list_to_str_with_pref pref "" (aux [] str_lst)
 
 
-let rec gray_seq bit_num =
+let rec gray_seq (bit_num : int) : string =
     if bit_num <= 0 then
         ""
     else
@@ -39,7 +39,7 @@ let rec gray_seq bit_num =
             let sec_half = add_prefix_and_rev "1" prev_seq in
         first_half ^ " " ^ sec_half
 
-let gray bit_num = 
+let gray (bit_num : int) = 
     print_endline (gray_seq bit_num)
 
 
