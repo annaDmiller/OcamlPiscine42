@@ -16,7 +16,8 @@ let () =
     print_newline ();
 
     print_endline "Check of the functions newCard / getValue / getColor";
-    let c1 = Card.newCard Card.Value.King Card.Color.Heart in
+    let c1 = Card.newCard Card.Value.King Card.Color.Heart
+    in
     print_endline (Card.toString c1);
     print_endline (Card.Value.toStringVerbose (Card.getValue c1));
     print_endline (Card.Color.toStringVerbose (Card.getColor c1));
@@ -24,7 +25,8 @@ let () =
 
     print_endline "Check of the functions compare / max / min";
     let c2 = Card.newCard Card.Value.T5 Card.Color.Spade in
-    let c3 = Card.newCard Card.Value.T5 Card.Color.Club in
+    let c3 = Card.newCard Card.Value.T5 Card.Color.Club 
+    in
     print_string "Test 1: not equal (positive): compare c1 c2 = ";
     print_int (Card.compare c1 c2);
     print_newline ();
@@ -39,8 +41,9 @@ let () =
     print_endline "Check of the function best";
     print_endline ("King of Heart expected: " ^ Card.toString (Card.best [ c2; c1; c3 ]));
     (try
-       let _ = Card.best [] in
-       print_endline "ERROR: should have raised"
+       let _ = Card.best [] 
+        in
+        print_endline "ERROR: should have raised"
     with Invalid_argument msg -> print_string "best [] raised: "; print_endline msg);
     print_newline ();
 

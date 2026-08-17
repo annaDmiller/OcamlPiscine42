@@ -11,7 +11,7 @@ let rec print_all_colors (colors : Color.t list) =
 let () =
     print_endline "Color.all values";
     print_all_colors Color.all;
-    print_endline "";
+    print_newline ();
     
     print_string "Color.toString Color.Spade = ";
     print_endline (Color.toString Color.Spade);

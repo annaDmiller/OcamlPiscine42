@@ -28,10 +28,12 @@ let () =
 
     print_endline "invalid_arg checks";
     (try
-       let _ = Value.next Value.As in
-       print_endline "ERROR: should have raised"
-     with Invalid_argument msg -> print_string "next As raised: "; print_endline msg);
+        let _ = Value.next Value.As 
+        in
+        print_endline "ERROR: should have raised"
+    with Invalid_argument msg -> print_string "next As raised: "; print_endline msg);
     (try
-       let _ = Value.previous Value.T2 in
-       print_endline "ERROR: should have raised"
-     with Invalid_argument msg -> print_string "previous T2 raised: "; print_endline msg)
+        let _ = Value.previous Value.T2 
+        in
+        print_endline "ERROR: should have raised"
+    with Invalid_argument msg -> print_string "previous T2 raised: "; print_endline msg)
