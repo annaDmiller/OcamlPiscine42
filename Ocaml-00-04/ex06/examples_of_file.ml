@@ -4,7 +4,7 @@ let example_of_line (line : string) : float array * string =
     let arr_fields = Array.make (num_fields - 1) 0.0
     in
     List.iteri
-      (fun ind value -> if ind < num_fields - 1 then arr_fields.(ind) <- float_of_string value)
+      (fun (ind : int) (value : string) -> if ind < num_fields - 1 then arr_fields.(ind) <- float_of_string value)
       fields;
     let cls = List.nth fields (num_fields - 1) 
     in
