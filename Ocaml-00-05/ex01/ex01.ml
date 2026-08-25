@@ -5,6 +5,21 @@ struct
     let equal key value =
         key = value
 
+
+    let code_of c =
+        let alphabet =
+    " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~" in
+        let len = String.length alphabet in
+        let rec search ind =
+            if ind >= len then
+                0
+            else if String.get alphabet ind = c then 
+                ind + 32
+            else
+                search (ind + 1)
+        in
+        search 0
+
     (*DJB2 string hashing algorithm*)
     let hash str =
         let len = String.length str
