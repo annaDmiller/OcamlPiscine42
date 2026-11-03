@@ -1,4 +1,4 @@
-NAME = ex03
+NAME = reactions
 SRC = atom.ml molecule.ml alkane.ml reaction.ml main.ml
 
 all: $(NAME)

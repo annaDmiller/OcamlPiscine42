@@ -93,3 +93,9 @@ object
     inherit molecule "Dioxygen"
     [ new Atom.oxygen(); new Atom.oxygen() ]
 end
+
+class dihydrogen () =
+object
+    inherit molecule "Dihydrogen"
+    [ new Atom.hydrogen(); new Atom.hydrogen() ]
+end
