@@ -1,7 +1,7 @@
 class virtual molecule (n : string) (atom_list : Atom.atom list) =
 object (self)
     method name = n
-    method atom_list = atom_list
+    method private atom_list = atom_list
 
     method private atom_counts : (string * int) list =
         let add acc symbol =
@@ -11,6 +11,7 @@ object (self)
         in
         List.fold_left (fun acc x -> add acc x#symbol) [] atom_list
 
+    (*Formula is composed in Hill notation: C -> H -> other elements in alphabetical order*)
     method formula =
         let count_list = self#atom_counts in
         let string_of_pair (symbol, count) =

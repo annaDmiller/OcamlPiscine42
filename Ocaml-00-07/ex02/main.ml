@@ -14,4 +14,9 @@ let () =
         (methane#equals (new Alkane.methane () :> Molecule.molecule));
     Printf.printf "methane == ethane  : %b\n"
         (methane#equals (ethane :> Molecule.molecule));
-    
+    print_newline ();
+    print_endline "Test of exception on alkane's size";
+    try let test = new Alkane.test () in
+        print_endline test#to_string
+    with
+        | Alkane.Alkane_name message -> print_endline message;

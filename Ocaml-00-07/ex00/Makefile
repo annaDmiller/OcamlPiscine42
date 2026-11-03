@@ -1,4 +1,4 @@
-NAME = ex00
+NAME = atoms
 SRC = atom.ml main.ml
 
 all: $(NAME)

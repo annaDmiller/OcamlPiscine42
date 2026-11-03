@@ -1,4 +1,4 @@
-NAME = ex02
+NAME = alkanes
 SRC = atom.ml molecule.ml alkane.ml main.ml
 
 all: $(NAME)
