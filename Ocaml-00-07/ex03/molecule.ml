@@ -99,3 +99,10 @@ object
     inherit molecule "Dihydrogen"
     [ new Atom.hydrogen(); new Atom.hydrogen() ]
 end
+
+class hydrogen_peroxide () =
+object
+    inherit molecule "Hydrogen peroxide"
+    [ new Atom.hydrogen(); new Atom.hydrogen();
+    new Atom.oxygen(); new Atom.oxygen() ]
+end

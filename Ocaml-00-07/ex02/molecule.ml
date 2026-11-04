@@ -1,7 +1,7 @@
 class virtual molecule (n : string) (atom_list : Atom.atom list) =
 object (self)
     method name = n
-    method atom_list = atom_list
+    method private atom_list = atom_list
 
     method private atom_counts : (string * int) list =
         let add acc symbol =
