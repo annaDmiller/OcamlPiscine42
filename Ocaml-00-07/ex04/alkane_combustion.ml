@@ -1,72 +1,139 @@
-exception Not_balanced of string
+exception Reaction_not_balanced of string
 
-let gcd a b =
-    let rec aux a b = if b = 0 then a else aux b (a mod b)
-    in
-    aux (abs a) (abs b)
+let rec gcd a b =
+    if b = 0 then 
+        abs a
+    else 
+        gcd b (a mod b)
 
-class alkane_combustion (alkanes: Alkane.alkane list) =
-    let rec dedup lst accum = 
-        match lst with
-            | [] -> List.rev accum
-            | a :: rest ->
-                if List.exists (fun alk -> alk#equals (a :> Molecule.molecule)) accum then
-                    dedup rest accum
-                else
-                    dedup rest (a :: accum)
-    in
-
-    let dedup_lst = dedup alkanes []
-    in
-
-    let single_balance (alk : Alkane.alkane) : (int * int * int * int) =
-        let n = alk#size in
-        if (3 * n + 1) mod 2 = 0 then
-            (1, (3 * n + 1) / 2, n, n + 1)
-        else
-            (2, 3 * n + 1, 2 * n, 2 * (n + 1))
-    in
-
-    let combined_all = List.map (fun alk -> (alk, single_balance alk)) dedup_lst
-    in
-
-    let total_o2 = List.fold_left (fun acc (_, (_, coef_o2, _, _)) -> acc + coef_o2) 0 combined_all in
-    let total_co2 = List.fold_left (fun acc (_, (_, _, coef_co2, _)) -> acc + coef_co2) 0 combined_all in
-    let total_h2o = List.fold_left (fun acc (_, (_, _, _, coef_h2o)) -> acc + coef_h2o) 0 combined_all in
-
-    let overall_gcd =
+let group_alkanes (alkanes : Alkane.alkane list) =
+    let grouped =
         List.fold_left
-            (fun acc (_, (a, _, _, _)) -> gcd acc a)
-            (gcd total_o2 (gcd total_co2 total_h2o))
-            combined_all
+            (fun acc alkane ->
+                let rec add_or_increment lst =
+                    match lst with
+                        | [] -> [(alkane, 1)]
+                        | (existing, count) :: tail ->
+                            if existing#size = alkane#size then
+                                (existing, count + 1) :: tail
+                            else
+                                (existing, count) :: add_or_increment tail
+                in
+                add_or_increment acc)
+            []
+            alkanes
     in
-    let g = if overall_gcd = 0 then 1 else overall_gcd in
-    
-    let start_list = 
-        List.map (fun (alk, (coef_alk, _, _, _)) -> ((alk :> Molecule.molecule), coef_alk)) combined_all
-        @ [ (new Molecule.dioxygen(), total_o2 / g) ]
+    List.sort
+        (fun (a, _) (b, _) -> compare a#size b#size)
+        grouped
+
+
+let combustion_coefficients grouped =
+    let initial_coefficients =
+        List.map
+            (fun (alkane, _) -> (alkane, 1))
+            grouped
     in
 
-    let result_list =
-        [ new Molecule.carbon_dioxide(), total_co2 / g;
-        new Molecule.water(), total_h2o / g]
+    let oxygen_atoms =
+        List.fold_left
+            (fun acc (alkane, coefficient) ->
+                acc + coefficient * (3 * alkane#size + 1))
+            0
+            initial_coefficients
+    in
+
+    let alkane_coefficients =
+        if oxygen_atoms mod 2 = 0 then
+            initial_coefficients
+        else
+            let rec increment_smallest_even = function
+                | [] ->
+                    failwith "No even-sized alkane found"
+
+                | (alkane, coefficient) :: tail ->
+                    if alkane#size mod 2 = 0 then
+                        (alkane, coefficient + 1) :: tail
+                    else
+                        (alkane, coefficient) ::
+                        increment_smallest_even tail
+            in
+            increment_smallest_even initial_coefficients
+    in
+
+    let (oxygen_atoms, carbon_atoms, water_molecules) =
+        List.fold_left
+            (fun (oa, ca, wm) (alkane, coefficient) ->
+                let n = alkane#size 
+                in
+                (
+                    oa + coefficient * (3 * n + 1),
+                    ca + coefficient * n,
+                    wm + coefficient * (n + 1)
+                )
+            )
+            (0, 0, 0)
+            alkane_coefficients
+    in
+
+    let oxygen = oxygen_atoms / 2 in
+    let carbon_dioxide = carbon_atoms in
+    let water = water_molecules in
+
+    (alkane_coefficients, oxygen, carbon_dioxide, water)
+
+
+class alkane_combustion ?(balanced_data = None) (alkanes : Alkane.alkane list) =
+    let (starts, results) =
+        if alkanes = [] then
+            invalid_arg "At least one alkane is required"
+        else (
+            match balanced_data with
+                | None -> 
+                    (List.map
+                        (fun alkane -> ((alkane :> Molecule.molecule), 1))
+                        alkanes
+                    @ [ ((new Molecule.dioxygen () :> Molecule.molecule), 1) ],
+    
+                    [ ((new Molecule.carbon_dioxide () :> Molecule.molecule), 1);
+                    ((new Molecule.water () :> Molecule.molecule), 1) ]
+                )
+    
+                | Some (alkane_coefficients, oxygen, co2, water) ->
+                    (List.map
+                        (fun (alkane, coefficient) -> ((alkane :> Molecule.molecule), coefficient))
+                        alkane_coefficients
+                    @ [ ((new Molecule.dioxygen () :> Molecule.molecule), oxygen) ],
+    
+                    [ ((new Molecule.carbon_dioxide () :> Molecule.molecule), co2);
+                    ((new Molecule.water () :> Molecule.molecule), water) ]
+                )
+        )
     in
 object (self)
-    inherit Reaction.reaction start_list result_list
+    inherit Reaction.reaction starts results
 
-    method is_balanced = self#check_balance
+    method get_start : (Molecule.molecule * int) list =
+        if self#check_balance then 
+            starts
+        else 
+            raise (Reaction_not_balanced "The reaction not balanced. Can't give you start molecules.")
 
-    method get_start =
-        if not self#is_balanced then
-            raise (Not_balanced "alkane_combustion: reaction isn't balanced")
-        else
-            List.sort (fun (m1, _) (m2, _) -> compare m1#formula m2#formula) start_list
+    method get_result : (Molecule.molecule * int) list =
+        if self#check_balance then 
+            results
+        else 
+            raise (Reaction_not_balanced "The reaction not balanced. Can't give you result molecules.")
 
-    method get_result =
-        if not self#is_balanced then
-            raise (Not_balanced "alkane_combustion: reaction isn't balanced")
-        else
-            List.sort (fun (m1, _) (m2, _) -> compare m1#formula m2#formula) result_list
-    
-    method balance = (new alkane_combustion dedup_lst :> Reaction.reaction)
+    method is_balanced : bool = self#check_balance
+
+    method balance : alkane_combustion =
+        let grouped = group alkanes
+        in
+        let coefficients = combustion_coefficients grouped
+        in
+
+        new alkane_combustion
+            ~balanced_data:(Some coefficients)
+            alkanes
 end
