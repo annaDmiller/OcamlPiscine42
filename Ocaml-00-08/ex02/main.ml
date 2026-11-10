@@ -78,30 +78,34 @@ let check (label : string) (b : bool) : unit =
 	  print_endline ((if b then "[OK] " else "[KO] ") ^ label)
 
 let () = 
-	  print_endline (string_of_int (Calc_int.power 3 3));
-	  print_endline (string_of_float (Calc_float.power 3.0 3));
-	  print_endline (string_of_int (Calc_int.mul (Calc_int.add 20 1) 2));
-	  print_endline (string_of_float (Calc_float.mul (Calc_float.add 20.0 1.0) 2.0));
-	  print_endline (string_of_int (Calc_int.sub 10 4));
-	  print_endline (string_of_float (Calc_float.sub 10.0 4.0));
-	  print_endline (string_of_int (Calc_int.div 20 4));
-	  print_endline (string_of_float (Calc_float.div 20.0 4.0));
-	  print_endline (string_of_int (Calc_int.fact 5));
-	  print_endline (string_of_float (Calc_float.fact 5.0));
-	  print_endline (string_of_int (Calc_int.fact 0));
-	  print_endline (string_of_int (Calc_int.power 2 10));
-	  check "int power x 0 = 1" (Calc_int.power 7 0 = 1);
-	  check "int power 2 10 = 1024" (Calc_int.power 2 10 = 1024);
-	  check "float power 2.0 3 = 8.0" (Calc_float.power 2.0 3 = 8.0);
-	  check "int fact 0 = 1" (Calc_int.fact 0 = 1);
-	  check "int fact 1 = 1" (Calc_int.fact 1 = 1);
-	  check "int fact 10 = 3628800" (Calc_int.fact 10 = 3628800);
-	  check "float fact 5.0 = 120.0" (Calc_float.fact 5.0 = 120.0);
-	  check "int add/sub/mul/div" (Calc_int.add 2 3 = 5 && Calc_int.sub 2 3 = -1
-	  	  && Calc_int.mul 2 3 = 6 && Calc_int.div 7 2 = 3);
-	  check "float add/sub/mul/div" (Calc_float.add 2.0 3.0 = 5.0 && Calc_float.sub 2.0 3.0 = -1.0
-	  	  && Calc_float.mul 2.0 3.0 = 6.0 && Calc_float.div 7.0 2.0 = 3.5);
-	  check "zero1 is neutral for add (int, float)"
-	  	  (Calc_int.add INT.zero1 9 = 9 && Calc_float.add FLOAT.zero1 9.0 = 9.0);
-	  check "zero2 is neutral for mul (int, float)"
-	  	  (Calc_int.mul INT.zero2 9 = 9 && Calc_float.mul FLOAT.zero2 9.0 = 9.0)
+	print_endline (string_of_int (Calc_int.power 3 3));
+	print_endline (string_of_float (Calc_float.power 3.0 3));
+	print_endline (string_of_int (Calc_int.mul (Calc_int.add 20 1) 2));
+	print_endline (string_of_float (Calc_float.mul (Calc_float.add 20.0 1.0) 2.0));
+	print_endline (string_of_int (Calc_int.sub 10 4));
+	print_endline (string_of_float (Calc_float.sub 10.0 4.0));
+	print_endline (string_of_int (Calc_int.div 20 4));
+	print_endline (string_of_float (Calc_float.div 20.0 4.0));
+	print_endline (string_of_int (Calc_int.fact 5));
+	print_endline (string_of_float (Calc_float.fact 5.0));
+	print_endline (string_of_int (Calc_int.fact 0));
+	print_endline (string_of_int (Calc_int.power 2 10));
+	check "int power x 0 = 1" (Calc_int.power 7 0 = 1);
+	check "int power 2 10 = 1024" (Calc_int.power 2 10 = 1024);
+	check "float power 2.0 3 = 8.0" (Calc_float.power 2.0 3 = 8.0);
+	check "int fact 0 = 1" (Calc_int.fact 0 = 1);
+	check "int fact 1 = 1" (Calc_int.fact 1 = 1);
+	check "int fact 10 = 3628800" (Calc_int.fact 10 = 3628800);
+	check "float fact 5.0 = 120.0" (Calc_float.fact 5.0 = 120.0);
+	check "int add/sub/mul/div" (Calc_int.add 2 3 = 5 && Calc_int.sub 2 3 = -1
+		&& Calc_int.mul 2 3 = 6 && Calc_int.div 7 2 = 3);
+	check "float add/sub/mul/div" (Calc_float.add 2.0 3.0 = 5.0 && Calc_float.sub 2.0 3.0 = -1.0
+		&& Calc_float.mul 2.0 3.0 = 6.0 && Calc_float.div 7.0 2.0 = 3.5);
+	check "zero1 is neutral for add (int, float)"
+		(Calc_int.add INT.zero1 9 = 9 && Calc_float.add FLOAT.zero1 9.0 = 9.0);
+	check "zero2 is neutral for mul (int, float)"
+		(Calc_int.mul INT.zero2 9 = 9 && Calc_float.mul FLOAT.zero2 9.0 = 9.0);
+    
+    print_endline "=== Check of the assotiativity for the Calc_int ===";
+    check "int add assitiativity" (Calc_int.add (Calc_int.add 2 3) 4 = Calc_int.add 2 (Calc_int.add 3 4));
+    check "int mul assitiativity" (Calc_int.mul (Calc_int.mul 2 3) 4 = Calc_int.mul 2 (Calc_int.mul 3 4))
