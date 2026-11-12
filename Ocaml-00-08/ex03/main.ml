@@ -56,44 +56,68 @@ let describe (t : int Try.t) : string =
 	| Try.Failure (My_error msg) -> Printf.sprintf "Failure (My_error %S)" msg
 	| Try.Failure e -> Printf.sprintf "Failure %S" (Printexc.to_string e)
 
+let check (label : string) (b : bool) : unit =
+	  print_endline ((if b then "[OK] " else "[KO] ") ^ label)
+
 let () =
-	  (* return on a Success *)
-	  let ok = Try.return 10 in
-	  print_endline (describe ok);
+	(* return on a Success *)
+	let ok = Try.return 10 in
+	print_endline (describe ok);
   
-	  (* bind that raises exception, turning Success into Failure *)
+	(* bind that raises exception, turning Success into Failure *)
     let divide a b = a / b in
-	  let bad = Try.bind ok (fun x -> Try.return (divide x 0)) in
-	  print_endline (describe bad);
-  
-	  (* bind that succeeds *)
-	  let good = Try.bind ok (fun x -> Try.return (divide x 2)) in
-	  print_endline (describe good);
-  
-	  (* recover from a Failure *)
-	  let recovered = Try.recover bad (fun _ -> Try.return (-1)) in
-	  print_endline (describe recovered);
-  
-	  (* recover on an already-successful monad is a no-op *)
-	  let untouched = Try.recover good (fun _ -> Try.return (-1)) in
-	  print_endline (describe untouched);
-  
-	  (* filter that fails the predicate *)
-	  let filtered_out = Try.filter ok (fun x -> x > 100) in
-	  print_endline (describe filtered_out);
-  
-	  (* filter that passes the predicate *)
-	  let filtered_in = Try.filter ok (fun x -> x > 5) in
-	  print_endline (describe filtered_in);
-  
-	  (* flatten a nested Success (Success ...) *)
-	  let nested_ok = Try.return (Try.return 42) in
-	  print_endline (describe (Try.flatten nested_ok));
-  
-	  (* flatten a nested Success (Failure ...) -> Failure *)
-	  let nested_fail = Try.return bad in
-	  print_endline (describe (Try.flatten nested_fail));
-  
-	  (* flatten a direct Failure *)
-	  let direct_fail : int Try.t Try.t = Try.Failure (My_error "outer failure") in
-	  print_endline (describe (Try.flatten direct_fail))
+	let bad = Try.bind ok (fun x -> Try.return (divide x 0)) in
+	print_endline (describe bad);
+
+	(* bind that succeeds *)
+	let good = Try.bind ok (fun x -> Try.return (divide x 2)) in
+	print_endline (describe good);
+
+	(* recover from a Failure *)
+	let recovered = Try.recover bad (fun _ -> Try.return (-1)) in
+	print_endline (describe recovered);
+
+	(* recover on an already-successful monad is a no-op *)
+	let untouched = Try.recover good (fun _ -> Try.return (-1)) in
+	print_endline (describe untouched);
+
+	(* filter that fails the predicate *)
+	let filtered_out = Try.filter ok (fun x -> x > 100) in
+	print_endline (describe filtered_out);
+
+	(* filter that passes the predicate *)
+	let filtered_in = Try.filter ok (fun x -> x > 5) in
+	print_endline (describe filtered_in);
+
+	(* flatten a nested Success (Success ...) *)
+	let nested_ok = Try.return (Try.return 42) in
+	print_endline (describe (Try.flatten nested_ok));
+
+	(* flatten a nested Success (Failure ...) -> Failure *)
+	let nested_fail = Try.return bad in
+	print_endline (describe (Try.flatten nested_fail));
+
+	(* flatten a direct Failure *)
+	let direct_fail : int Try.t Try.t = Try.Failure (My_error "outer failure") in
+	print_endline (describe (Try.flatten direct_fail));
+
+    print_newline();
+    print_endline "Test of the monads rules";
+    
+    let incr (a : int) : int Try.t = Try.return (a + 1) in
+    check "Left identity rule check"
+        (Try.bind (Try.return 10) incr = incr 10);
+
+    check "Right identity rule check on success"
+        (Try.bind ok Try.return = ok);
+
+    let failed : int Try.t = Try.Failure (My_error "test") in
+    check "Right identity rule check on failed"
+        (Try.bind failed Try.return = failed);
+
+    let f (x : int) : int Try.t = Try.return (x + 1) in
+    let g (x : int) : int Try.t = Try.return (x * 2) in
+    let m = Try.return 10 in
+    check "Associativity rule check"
+        (Try.bind (Try.bind m f) g = Try.bind m (fun x -> Try.bind (f x) g))
+    

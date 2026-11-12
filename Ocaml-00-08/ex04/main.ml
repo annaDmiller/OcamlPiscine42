@@ -14,7 +14,7 @@ sig
 
     (* additional functions for testing purpose *)
     val of_list : 'a list -> 'a t
-	  val to_list : 'a t -> 'a list
+	val to_list : 'a t -> 'a list
 end =
 struct
     type 'a t = 'a list
@@ -52,13 +52,13 @@ struct
         List.for_all predicat src
 
     (* additional functions for testin purpose *)
-	  let rec of_list (lst : 'a list) : 'a t =
-	  	  match lst with
-	  	      | [] -> []
-	  	      | x :: rest -> add_unique x (of_list rest)
+	let rec of_list (lst : 'a list) : 'a t =
+		  match lst with
+		      | [] -> []
+		      | x :: rest -> add_unique x (of_list rest)
 
-	  let to_list (s : 'a t) : 'a list =
-	  	  s
+	let to_list (s : 'a t) : 'a list = s
+    
 end
 
 let print_int_set (label : string) (s : int Set.t) : unit =
@@ -66,6 +66,18 @@ let print_int_set (label : string) (s : int Set.t) : unit =
 	  print_string " = { ";
 	  Set.foreach s (fun x -> Printf.printf "%d " x);
 	  print_endline "}"
+
+    let set_equal (s1 : 'a Set.t) (s2 : 'a Set.t) : bool =
+        List.for_all
+            (fun x -> List.mem x (Set.to_list s2))
+            (Set.to_list s1)
+        &&
+        List.for_all
+            (fun x -> List.mem x (Set.to_list s1))
+            (Set.to_list s2)
+
+    let check (label : string) (b : bool) : unit =
+	    print_endline ((if b then "[OK] " else "[KO] ") ^ label)
 
 let () = 
 	let s1 = Set.of_list [ 1; 2; 3; 2; 1 ] in
@@ -89,4 +101,19 @@ let () =
 
 	(* bind: for each x in s1, produce {x; x*10}, then union everything *)
 	let bound = Set.bind s1 (fun x -> Set.of_list [ x; x * 10 ]) in
-	print_int_set "bind s1 (fun x -> {x; x*10})" bound
+	print_int_set "bind s1 (fun x -> {x; x*10})" bound;
+
+    print_newline();
+    print_endline "Test of the monads rules";
+
+    let f (x : int) : int Set.t = Set.of_list [ x; x * 10 ] in
+    check "Left identity rule check"
+        (set_equal (Set.bind (Set.return 10) f) (f 10));
+
+    check "Right identity rule check"
+        (set_equal (Set.bind s1 Set.return) s1);
+
+    let f (x : int) : int Set.t = Set.of_list [ x; x + 1 ] in
+    let g (x : int) : int Set.t = Set.of_list [ x; x * 10 ] in
+    check "Associativity rule check"
+        (set_equal (Set.bind (Set.bind s1 f) g) (Set.bind s1 (fun x -> Set.bind (f x) g)))
